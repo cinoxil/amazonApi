@@ -7,10 +7,9 @@ module.exports = {
 		if (!asins) return res.send().status({ message: 'File is empty.' });
 		let paramsUSA = {};
 		let paramsCA = {};
-
-		const ca = await asins.forEach(async (element) => {
-			let resultUSA = [];
-			let resultCA = [];
+		let resultUSA = [];
+		let resultCA = [];
+		asins.forEach(async (element) => {
 			paramsUSA = {
 				api_key: '35DB182C051A4D338AB427DAA69A274A',
 				amazon_domain: 'amazon.com',
@@ -23,29 +22,11 @@ module.exports = {
 				asin: element,
 				type: 'product',
 			};
-			await axios
-				.get('https://api.rainforestapi.com/request', { paramsUSA })
-				.then((response) => {
-					// print the JSON response from Rainforest API
-					resultUSA.push(response.data);
-				})
-				.catch((error) => {
-					// catch and print the error
-					console.log(error);
-				});
-			await axios
-				.get('https://api.rainforestapi.com/request', { paramsCA })
-				.then((response) => {
-					// print the JSON response from Rainforest API
-					resultCA.push(response.data);
-				})
-				.catch((error) => {
-					// catch and print the error
-					console.log(error);
-				});
-			return resultUSA, resultCA;
+			var aMERICA = await axios.get('https://api.rainforestapi.com/request', { paramsUSA });
+
+			var cANADA = await axios.get('https://api.rainforestapi.com/request', { paramsCA });
 		});
 
-		res.json(ca);
+		res.json(resultUSA, resultCA);
 	},
 };

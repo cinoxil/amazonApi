@@ -1,4 +1,5 @@
 const readXlsxFile = require('read-excel-file/node');
+const axios = require('axios');
 
 async function readFile() {
 	try {
@@ -8,38 +9,47 @@ async function readFile() {
 	}
 	return rows;
 }
-
-async function apiReq() {
+async function apiReqUsa() {
 	var asins = await readFile();
-	console.log(asins.length);
-	if (!asins) return res.send().status({ message: 'File is empty.' });
-	let paramsUsa = {};
-	let paramsCa = {};
-	asins.forEach(async (element) => {
-		paramsUsa = {
-			api_key: '35DB182C051A4D338AB427DAA69A274A',
-			amazon_domain: domain,
-			asin: 'amazon.com',
-			type: 'product',
-		};
-		paramsCa = {
-			api_key: '35DB182C051A4D338AB427DAA69A274A',
-			amazon_domain: domain,
-			asin: 'amazon.ca',
-			type: 'product',
-		};
-		var [usa, ca] = await axios.all([
-			'https://api.rainforestapi.com/request',
-			{ paramsUsa },
-			'https://api.rainforestapi.com/request',
-			{ paramsCa },
-		]);
-	});
 
-	return usa, ca;
+	if (!asins) return res.send().status({ message: 'File is empty.' });
+
+	var usa = [];
+
+	for (let i = 0; i < asins.length; i++) {
+		const params = {
+			api_key: '35DB182C051A4D338AB427DAA69A274A',
+			amazon_domain: 'amazon.com',
+			asin: asins[i],
+			type: 'product',
+		};
+		usa[i] = await axios.get('https://api.rainforestapi.com/request', { params });
+	}
+
+	return usa;
+}
+async function apiReqCa() {
+	var asins = await readFile();
+
+	if (!asins) return res.send().status({ message: 'File is empty.' });
+
+	var ca = [];
+
+	for (let i = 0; i < asins.length; i++) {
+		const params = {
+			api_key: '35DB182C051A4D338AB427DAA69A274A',
+			amazon_domain: 'amazon.ca',
+			asin: asins[i],
+			type: 'product',
+		};
+		ca[i] = await axios.get('https://api.rainforestapi.com/request', { params });
+	}
+
+	return ca;
 }
 
 module.exports = {
 	readFile,
-	apiReq,
+	apiReqUsa,
+	apiReqCa,
 };

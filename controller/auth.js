@@ -5,8 +5,8 @@ var jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 
-module.exports = {
-	signUp: (req, res) => {
+module.exports.authController = {
+	create: (req, res) => {
 		var { email, password } = req.body;
 		var hashedPassword;
 		var user = user.findOne({ email });
@@ -31,13 +31,43 @@ module.exports = {
 				res.sendStatus(500);
 			});
 	},
+	update: (req, res) => {
+		var { email, password } = req.body;
+		var hashedPassword;
+		bcrypt
+			.hash(password, saltRounds)
+			.then((result) => {
+				hashedPassword = result;
+			})
+			.catch((err) => {
+				console.log(err);
+				return res.sendStatus(500);
+			});
+            try {
+                await user.findOneAndUpdate({ email: email }, { email: email, password: hashedPassword });
+                res.send(200);
+            } catch (error) {
+                res.sendStatus(500)
+            }
+		
+	},
+    delete: (req, res) => {
+        const { email } = req.body;
+        try {   
+            await user.findOneAndDelete({email:email})
+            res.send(200)
+        } catch (error) {
+            res.send(500)
+        }
+    },
 	signIn: async (req, res) => {
 		var { email, password } = req.body;
+
 		var user = user.findOne({ email });
 
 		const match = await bcrypt.compare(password, user.password);
 		if (match) {
-			const token = jwt.sign({ email: user.email }, process.env.TOEKN_KEY, {
+			const token = jwt.sign({ email: user.email }, process.env.ACCESS_SECRET_KEY, {
 				expiresIn: '1y',
 			});
 			res.send(token);

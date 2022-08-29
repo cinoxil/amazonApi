@@ -1,78 +1,97 @@
-const user = require('../models/user');
-const bcrypt = require('bcrypt');
-const user = require('../models/user');
-var jwt = require('jsonwebtoken');
-
+const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
+const user = require("../models/user");
 const saltRounds = 10;
-
+require("dotenv").config({ path: `./.env` });
 module.exports.authController = {
-	create: (req, res) => {
-		var { email, password } = req.body;
-		var hashedPassword;
-		var user = user.findOne({ email });
-		user
-			? res.status(400).send('Bu email zaten kaydedilmiş')
-			: bcrypt
-					.hash(password, saltRounds)
-					.then((result) => {
-						hashedPassword = result;
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-		var user = new user({
-			email: email,
-			password: hashedPassword,
-		})
-			.then(() => {
-				res.status(201).send('Başarılı');
-			})
-			.catch((err) => {
-				res.sendStatus(500);
-			});
-	},
-	update: (req, res) => {
-		var { email, password } = req.body;
-		var hashedPassword;
-		bcrypt
-			.hash(password, saltRounds)
-			.then((result) => {
-				hashedPassword = result;
-			})
-			.catch((err) => {
-				console.log(err);
-				return res.sendStatus(500);
-			});
-            try {
-                await user.findOneAndUpdate({ email: email }, { email: email, password: hashedPassword });
-                res.send(200);
-            } catch (error) {
-                res.sendStatus(500)
+  get: async (req, res) => {
+    var userd = await user.find();
+    let userArr = [];
+    userd.forEach((element) => {
+      userArr.push(element.email);
+    });
+    res.send(userArr);
+  },
+  create: async (req, res) => {
+    var { email, password } = req.body;
+    var hashedPassword;
+    var userd = await user.findOne({ email: email });
+    if (userd) {
+      return res.status(400).send("Bu email zaten kaydedilmiş");
+    } else {
+      bcrypt
+        .hash(password, saltRounds)
+        .then((result) => {
+          hashedPassword = result;
+          var usert = new user({
+            email: email,
+            password: hashedPassword,
+          }).save(function (err) {
+            if (err) {
+              return res.sendStatus(500);
+            } else {
+              res.sendStatus(201);
             }
-		
-	},
-    delete: (req, res) => {
-        const { email } = req.body;
-        try {   
-            await user.findOneAndDelete({email:email})
-            res.send(200)
-        } catch (error) {
-            res.send(500)
-        }
-    },
-	signIn: async (req, res) => {
-		var { email, password } = req.body;
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  },
+  update: async (req, res) => {
+    var { email, password } = req.body;
+    var hashedPassword;
+    bcrypt
+      .hash(password, saltRounds)
+      .then((result) => {
+        hashedPassword = result;
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.sendStatus(500);
+      });
+    try {
+      await user.findOneAndUpdate(
+        { email: email },
+        { password: hashedPassword }
+      );
+      res.sendStatus(200);
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  },
+  delete: async (req, res) => {
+    const { email } = req.params;
+    if (email === "admin") return res.status(400).send("Bu email silinemez!");
+    try {
+      await user.findOneAndDelete({ email: email });
+      res.sendStatus(200);
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  },
+  signIn: async (req, res) => {
+    var { email, password } = req.body;
+    var userd = await user.findOne({ email: email });
 
-		var user = user.findOne({ email });
+    if (userd) {
+      const match = await bcrypt.compare(password, userd.password);
 
-		const match = await bcrypt.compare(password, user.password);
-		if (match) {
-			const token = jwt.sign({ email: user.email }, process.env.ACCESS_SECRET_KEY, {
-				expiresIn: '1y',
-			});
-			res.send(token);
-		} else {
-			res.status(401);
-		}
-	},
+      if (match) {
+        const token = jwt.sign(
+          { email: userd.email },
+          process.env.ACCESS_SECRET_KEY,
+          {
+            expiresIn: "1y",
+          }
+        );
+        res.send(token);
+      } else {
+        res.sendStatus(401);
+      }
+    } else {
+      res.sendStatus(401);
+    }
+  },
 };

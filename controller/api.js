@@ -1,11 +1,17 @@
-const { apiReq, readFile, compareProducts } = require('./helper');
+const { apiReq, readFile, compareProducts } = require("./helper");
 
 module.exports = {
-	getDataFromApi: async (req, res) => {
-		const file = await readFile();
+  getDataFromApi: async (req, res) => {
+    const { asins, ratio, fbaStatus, rating } = req.body;
 
-		const [usa, ca] = await Promise.all([apiReq('amazon.com', file), apiReq('amazon.ca', file)]);
+    if (!asins || !ratio || fbaStatus == null || !rating)
+      return res.sendStatus(400);
 
-		res.send(compareProducts(usa, ca, 2, false, 2));
-	},
+    const [usa, ca] = await Promise.all([
+      apiReq("amazon.com", asins),
+      apiReq("amazon.ca", asins),
+    ]);
+
+    res.send(compareProducts(usa, ca, ratio, fbaStatus, rating));
+  },
 };

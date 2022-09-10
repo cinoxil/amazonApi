@@ -1,5 +1,12 @@
 const readXlsxFile = require('read-excel-file/node');
 const axios = require('axios');
+const fs = require('fs');
+
+function logError(errMessage) {
+	var date = new Date();
+	var dateNow = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+	fs.appendFileSync('errLog.txt', dateNow + ' ' + errMessage + '\n', 'UTF-8', { flags: 'a' });
+}
 
 async function readFile() {
 	try {
@@ -109,13 +116,15 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 						}
 					} catch (err) {
 						console.log(err);
+						logError(err);
 						reject(err);
 					}
 				});
 				resolve(filteredProducts);
 			})
 			.catch(function (error) {
-				console.error(error);
+				console.log(error);
+				logError(error);
 				reject(error);
 			});
 	});
@@ -125,4 +134,5 @@ module.exports = {
 	readFile,
 	apiReq,
 	compareProducts,
+	logError,
 };

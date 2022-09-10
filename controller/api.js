@@ -8,10 +8,9 @@ module.exports = {
 
 		try {
 			const [usa, ca] = await Promise.all([apiReq('amazon.com', asins), apiReq('amazon.ca', asins)]);
+			res.send(await compareProducts(usa, ca, ratio, fbaStatus, rating));
 		} catch (error) {
 			logError(error);
 		}
-
-		res.send(await compareProducts(usa, ca, ratio, fbaStatus, rating));
 	},
 };

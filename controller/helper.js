@@ -59,21 +59,21 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 					try {
 						var usaSuccessValue = element.data?.request_info?.success;
 
-						var usaPriceValue = element.data?.product?.buybox_winner?.price?.value;
+						var usaPriceValue = parseFloat(element.data?.product?.buybox_winner?.price?.value);
 						var usaInStock = element.data?.product?.buybox_winner?.availability?.type;
 						var usaIsFulfilledByAmazon =
 							element.data?.product?.buybox_winner?.fulfillment?.is_fulfilled_by_amazon;
 						//var usaRating = element.data.product.rating;
 
 						var caSuccessValue = listCa[index].data?.request_info?.success;
-						var caPriceValue = listCa[index].data?.product?.buybox_winner?.price?.value;
+						var caPriceValue = parseFloat(listCa[index].data?.product?.buybox_winner?.price?.value);
 						//var caInStock = listCa[index].data.product.buybox_winner.availability.type;
 						var caIsFulfilledByAmazon =
 							listCa[index].data?.product?.buybox_winner?.fulfillment?.is_fulfilled_by_amazon;
-						var caRating = listCa[index].data?.product?.rating;
+						var caRating = parseFloat(listCa[index].data?.product?.rating);
 
-						var caPrice = parseInt(caPriceValue) / parseInt(response.data.response.rates.CAD);
-						var priceRatio = caPrice / parseInt(usaPriceValue);
+						var caPrice = caPriceValue / parseFloat(response.data.response.rates.CAD);
+						var priceRatio = caPrice / usaPriceValue;
 
 						if (fbaStatus == true) {
 							if (

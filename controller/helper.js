@@ -91,7 +91,7 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 									priceRatio: priceRatio,
 									rating: listCa[index].data.product.rating,
 									buyingPrice: usaPriceValue,
-									sellingPrice: caPriceValue / response.data.response.rates.CAD,
+									sellingPrice: caPrice,
 								});
 							}
 						} else {
@@ -111,7 +111,7 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 									priceRatio: priceRatio,
 									rating: listCa[index].data.product.rating,
 									buyingPrice: usaPriceValue,
-									sellingPrice: caPriceValue / response.data.response.rates.CAD,
+									sellingPrice: caPrice,
 								});
 							}
 						}

@@ -72,7 +72,8 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 							listCa[index].data?.product?.buybox_winner?.fulfillment?.is_fulfilled_by_amazon;
 						var caRating = listCa[index].data?.product?.rating;
 
-						var priceRatio = caPriceValue / response.data.response.rates.CAD / usaPriceValue;
+						var caPrice = parseInt(caPriceValue) / parseInt(response.data.response.rates.CAD);
+						var priceRatio = caPrice / usaPriceValue;
 
 						if (fbaStatus == true) {
 							if (

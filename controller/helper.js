@@ -73,7 +73,7 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 						var caRating = listCa[index].data?.product?.rating;
 
 						var caPrice = parseInt(caPriceValue) / parseInt(response.data.response.rates.CAD);
-						var priceRatio = caPrice / usaPriceValue;
+						var priceRatio = caPrice / parseInt(usaPriceValue);
 
 						if (fbaStatus == true) {
 							if (

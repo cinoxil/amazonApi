@@ -121,6 +121,7 @@ function compareProducts(listUsa, listCa, ratio, fbaStatus, rating) {
 							reject(err);
 						}
 					});
+
 					resolve(filteredProducts);
 				})
 				.catch(function (error) {

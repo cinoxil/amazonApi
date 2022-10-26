@@ -1,3 +1,5 @@
+const user = require('../models/user');
+
 const { apiReq, readFile, compareProducts, logError } = require('./helper');
 
 module.exports = {
@@ -8,7 +10,14 @@ module.exports = {
 
 		try {
 			const [usa, ca] = await Promise.all([apiReq('amazon.com', asins), apiReq('amazon.ca', asins)]);
+
 			res.send(await compareProducts(usa, ca, ratio, fbaStatus, rating));
+
+			const newData = await user.findOneAndUpdate(
+				{ email: res.locals.user.email },
+				{ $inc: { asinCount: usa.length } },
+				{ new: true }
+			);
 		} catch (error) {
 			logError(error);
 		}

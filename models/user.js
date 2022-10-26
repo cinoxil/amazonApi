@@ -1,20 +1,23 @@
-const mongoose = require("mongoose");
-const stringDb =
-  "mongodb+srv://bfz:1Ci2AylqKEyaOwgF@cluster0.e8z9p.mongodb.net/?retryWrites=true&w=majority";
+const mongoose = require('mongoose');
+const stringDb = 'mongodb+srv://cinoxil:Ugur199696.@cluster0.i8itvsc.mongodb.net/amazonApi';
 mongoose.connect(stringDb);
 
 var userSchema = new mongoose.Schema(
-  {
-    email: {
-      type: String,
-      unique: true,
-      trim: true,
-    },
-    password: {
-      type: String,
-    },
-  },
-  { timestamps: true }
+	{
+		email: {
+			type: String,
+			unique: true,
+			trim: true,
+		},
+		password: {
+			type: String,
+		},
+		asinCount: {
+			type: Number,
+			default: 0,
+		},
+	},
+	{ timestamps: true }
 );
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model('users', userSchema);

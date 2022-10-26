@@ -10,7 +10,7 @@ module.exports.authController = {
 		var userd = await user.find();
 		let userArr = [];
 		userd.forEach((element) => {
-			userArr.push(element.email);
+			userArr.push({ email: element.email, count: element.asinCount });
 		});
 		res.send(userArr);
 	},

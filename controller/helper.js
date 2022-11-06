@@ -19,16 +19,19 @@ async function readFile() {
 async function apiReq(domain, asins) {
 	if (!asins) return res.send().status({ message: 'File is empty.' });
 
+	let uniqueAsins = [...new Set(asins)];
+
 	var data = [];
 	var asinList = [];
 
-	for (let i = 0; i < asins.length; i++) {
+	for (let i = 0; i < uniqueAsins.length; i++) {
 		const params = {
 			api_key: '35DB182C051A4D338AB427DAA69A274A',
 			amazon_domain: domain,
-			asin: asins[i],
+			asin: uniqueAsins[i],
 			type: 'product',
 		};
+
 		asinList.push(
 			axios.create({
 				baseURL: 'https://api.rainforestapi.com/request',

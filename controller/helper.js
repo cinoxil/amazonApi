@@ -19,7 +19,7 @@ async function readFile() {
 async function apiReq(domain, asins) {
 	if (!asins) return res.send().status({ message: 'File is empty.' });
 
-	let uniqueAsins = [...new Set(asins)];
+	let uniqueAsins = [...new Set(...asins)];
 
 	var data = [];
 	var asinList = [];

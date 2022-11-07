@@ -1,0 +1,3 @@
+7/10/2022 Error: getaddrinfo ENOTFOUND api.rainforestapi.com
+7/10/2022 Error: read ECONNRESET
+7/10/2022 Error: socket hang up

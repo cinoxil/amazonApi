@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const stringDb = 'mongodb+srv://cinoxil:Ugur199696.@cluster0.i8itvsc.mongodb.net/?retryWrites=true&w=majority';
+const stringDb =
+	'mongodb+srv://amazonUser:Ugur12345.@cluster0.i8itvsc.mongodb.net/?retryWrites=true&w=majority/amazonApi';
 mongoose.connect(stringDb);
 
 var userSchema = new mongoose.Schema(

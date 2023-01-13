@@ -18,6 +18,7 @@ module.exports.authController = {
 		var { email, password } = req.body;
 		var hashedPassword;
 		var userd = await user.findOne({ email: email });
+
 		if (userd) {
 			return res.status(400).send('Bu email zaten kaydedilmiş');
 		} else {
